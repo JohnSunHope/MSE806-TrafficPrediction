@@ -2,7 +2,7 @@
 
 ## 组员先看
 
-这个目录包含本次小组作业的正式要求、Proposal、Report、PPT、Transcript 和最终检查清单。
+这个目录包含本次小组作业的正式要求、Proposal、Report、PPT、Transcript、Turnitin 查重报告和最终检查清单。Turnitin 查重结果文件已经下载并放入本目录，最终打包提交时应一并保留。
 
 三位成员分别录制自己的部分：
 
@@ -35,6 +35,7 @@ The exact calendar deadline and upload size limit should be checked on Blackboar
 | `MSE806_Assessment2_Official_Brief.pdf` | Formal assessment instructions and marking rubric |
 | `MSE806_Assessment2_Project_Proposal.docx` | Task A proposal |
 | `MSE806_Assessment2_Project_Report.docx` | Task B report, including implementation, evaluation, security and contributions |
+| `MSE806_Assessment2_Project_Report_Similarity.pdf` | Downloaded Turnitin similarity report for the project report; include it in the final submission package |
 | `MSE806_Assessment2_Three_Person_Presentation.pptx` | Twelve-slide group presentation |
 | `MSE806_Assessment2_Presentation_Transcript.docx` | Speaker script divided into three presenter parts |
 | `FINAL_SUBMISSION_CHECKLIST.md` | Final Turnitin, recording and ZIP checks |
@@ -126,6 +127,6 @@ Before Blackboard upload, confirm the final ZIP contains:
 - PowerPoint slides;
 - combined presentation MP4;
 - presentation transcript;
-- downloaded Turnitin report if required by the current platform instruction.
+- downloaded Turnitin similarity report (`MSE806_Assessment2_Project_Report_Similarity.pdf`), which is already included in this directory.
 
 Every member should confirm that their name, student ID and contribution are correct before the group submits.

@@ -7,8 +7,9 @@ prediction endpoint.
 
 ## Group members start here
 
-All assignment documents, the presentation and the recording instructions are
-in [`assessment_materials/`](assessment_materials/README.md).
+All assignment documents, the presentation, the recording instructions and the
+downloaded Turnitin similarity report are in
+[`assessment_materials/`](assessment_materials/README.md).
 
 Before recording, each member should:
 
