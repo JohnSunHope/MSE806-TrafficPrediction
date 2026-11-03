@@ -1,136 +1,75 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Traffic Prediction Dashboard</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 40px; background: #f5f5f5; }
-        h1 { color: #2c3e50; }
-        .container { display: flex; gap: 40px; flex-wrap: wrap; }
-        .card {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            padding: 20px;
-            flex: 1;
-            min-width: 300px;
-        }
-        input, button, textarea {
-            padding: 8px;
-            margin: 5px 0;
-            width: 100%;
-            box-sizing: border-box;
-            font-family: monospace;
-        }
-        button {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover { background-color: #2980b9; }
-        .result {
-            margin-top: 15px;
-            font-weight: bold;
-            background: #ecf0f1;
-            padding: 10px;
-            border-radius: 4px;
-        }
-        .error { color: red; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Secure Traffic Prediction</title>
+  <style>
+    :root { --navy:#102a43; --blue:#0e7490; --orange:#d97706; --paper:#f4f7f9; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family:Inter,Arial,sans-serif; color:var(--navy); background:var(--paper); }
+    header { padding:42px max(6vw,32px) 34px; color:white; background:linear-gradient(120deg,#102a43,#0e7490); }
+    header p { max-width:760px; margin:8px 0 0; color:#d9edf2; }
+    main { max-width:1180px; margin:34px auto; padding:0 28px 40px; display:grid; grid-template-columns:1.25fr .75fr; gap:28px; }
+    section { background:white; border-radius:14px; padding:26px; box-shadow:0 12px 35px rgba(16,42,67,.08); }
+    h1,h2 { margin-top:0; }
+    .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px 18px; }
+    label { display:block; font-size:13px; font-weight:700; }
+    input { width:100%; margin-top:6px; padding:10px 12px; border:1px solid #bcccdc; border-radius:7px; }
+    button { width:100%; margin-top:18px; padding:13px; border:0; border-radius:8px; color:white; background:var(--orange); font-weight:700; cursor:pointer; }
+    .result { margin-top:18px; padding:18px; background:#e7f5f7; border-left:5px solid var(--blue); min-height:62px; }
+    .metric { padding:14px 0; border-bottom:1px solid #e6edf2; }
+    .metric strong { display:block; font-size:27px; color:var(--blue); }
+    .security { font-size:14px; line-height:1.7; }
+    .status { color:#087f5b; font-weight:700; }
+    @media(max-width:800px){ main{grid-template-columns:1fr}.grid{grid-template-columns:1fr} }
+  </style>
 </head>
 <body>
-    <h1>🚦 Smart City Traffic Prediction</h1>
-    <div class="container">
-        <!-- XGBoost Card -->
-        <div class="card">
-            <h2>XGBoost Prediction</h2>
-            <label>Hour (0-23)</label><input type="number" id="hour" value="17">
-            <label>Day of week (0=Mon, 6=Sun)</label><input type="number" id="dow" value="3">
-            <label>Temperature (°C)</label><input type="number" id="temp" value="22.5" step="0.1">
-            <label>Precipitation (mm/h)</label><input type="number" id="precip" value="0.0" step="0.1">
-            <label>Volume (vehicles/5min)</label><input type="number" id="volume" value="180">
-            <label>Speed lag 1 (km/h)</label><input type="number" id="lag1" value="45">
-            <label>Speed lag 2 (km/h)</label><input type="number" id="lag2" value="48">
-            <label>Speed lag 3 (km/h)</label><input type="number" id="lag3" value="52">
-            <label>Rolling mean of last 3 speeds</label><input type="number" id="rolling" value="48.33" step="0.01">
-            <button onclick="predictXGBoost()">Predict with XGBoost</button>
-            <div id="xgboostResult" class="result"></div>
-        </div>
-
-        <!-- LSTM Card -->
-        <div class="card">
-            <h2>LSTM Prediction (6 timesteps)</h2>
-            <p>Enter 6 rows of data (hour, day_of_week, temp, precip, volume, speed).<br>
-            You can copy a sample from the console or use the button below.</p>
-            <textarea id="lstmData" rows="8" cols="40">[
-  {"hour":17,"day_of_week":3,"weather_temp":22.5,"weather_precip":0,"volume":180,"speed":45},
-  {"hour":17,"day_of_week":3,"weather_temp":22.5,"weather_precip":0,"volume":182,"speed":44},
-  {"hour":17,"day_of_week":3,"weather_temp":22.5,"weather_precip":0,"volume":185,"speed":43},
-  {"hour":17,"day_of_week":3,"weather_temp":22.5,"weather_precip":0,"volume":188,"speed":42},
-  {"hour":17,"day_of_week":3,"weather_temp":22.5,"weather_precip":0,"volume":190,"speed":41},
-  {"hour":17,"day_of_week":3,"weather_temp":22.5,"weather_precip":0,"volume":192,"speed":40}
-]</textarea>
-            <button onclick="predictLSTM()">Predict with LSTM</button>
-            <button onclick="loadSampleLSTM()">Load Sample from CSV (last 6 rows)</button>
-            <div id="lstmResult" class="result"></div>
-        </div>
-    </div>
-
-    <script>
-        const API_BASE = 'http://localhost:8000';
-
-        async function predictXGBoost() {
-            const features = {
-                hour: parseFloat(document.getElementById('hour').value),
-                day_of_week: parseFloat(document.getElementById('dow').value),
-                weather_temp: parseFloat(document.getElementById('temp').value),
-                weather_precip: parseFloat(document.getElementById('precip').value),
-                volume: parseFloat(document.getElementById('volume').value),
-                speed_lag_1: parseFloat(document.getElementById('lag1').value),
-                speed_lag_2: parseFloat(document.getElementById('lag2').value),
-                speed_lag_3: parseFloat(document.getElementById('lag3').value),
-                rolling_mean_3: parseFloat(document.getElementById('rolling').value)
-            };
-            try {
-                const response = await fetch(`${API_BASE}/predict/xgboost`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ features })
-                });
-                const data = await response.json();
-                document.getElementById('xgboostResult').innerHTML = `Predicted speed: ${data.predicted_speed.toFixed(2)} km/h`;
-            } catch (err) {
-                document.getElementById('xgboostResult').innerHTML = `<span class="error">Error: ${err.message}</span>`;
-            }
-        }
-
-        async function predictLSTM() {
-            const text = document.getElementById('lstmData').value;
-            let features;
-            try {
-                features = JSON.parse(text);
-            } catch (e) {
-                document.getElementById('lstmResult').innerHTML = '<span class="error">Invalid JSON format. Please check the array.</span>';
-                return;
-            }
-            try {
-                const response = await fetch(`${API_BASE}/predict/lstm`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ features })
-                });
-                const data = await response.json();
-                document.getElementById('lstmResult').innerHTML = `Predicted speed: ${data.predicted_speed.toFixed(2)} km/h`;
-            } catch (err) {
-                document.getElementById('lstmResult').innerHTML = `<span class="error">Error: ${err.message}</span>`;
-            }
-        }
-
-        async function loadSampleLSTM() {
-            alert("In a new PowerShell terminal, run:\npython -c \"import pandas as pd; df=pd.read_csv('traffic_data.csv'); print(df[['hour','day_of_week','weather_temp','weather_precip','volume','speed']].tail(6).to_json(orient='records'))\"\nThen paste the output into the textarea.");
-        }
-    </script>
+  <header>
+    <h1>Secure Traffic Prediction</h1>
+    <p>Five minute speed forecasts for a synthetic city-centre road segment. The demonstration uses a validated request schema, API-key authentication and request rate limiting.</p>
+  </header>
+  <main>
+    <section>
+      <h2>Forecast inputs</h2>
+      <div class="grid">
+        <label>API key<input id="apiKey" type="password" value="mse806-demo-key"></label>
+        <label>Hour<input id="hour" type="number" value="17" min="0" max="23.99"></label>
+        <label>Day of week<input id="day" type="number" value="2" min="0" max="6"></label>
+        <label>Temperature C<input id="temp" type="number" value="18" step="0.1"></label>
+        <label>Precipitation mm/h<input id="rain" type="number" value="0.4" step="0.1" min="0"></label>
+        <label>Vehicle volume<input id="volume" type="number" value="150" min="0"></label>
+        <label>Incident 0 or 1<input id="incident" type="number" value="0" min="0" max="1"></label>
+        <label>Previous speed 1<input id="lag1" type="number" value="45"></label>
+        <label>Previous speed 2<input id="lag2" type="number" value="46"></label>
+        <label>Previous speed 3<input id="lag3" type="number" value="44"></label>
+      </div>
+      <button onclick="predict()">Request forecast</button>
+      <div id="result" class="result">Ready for a forecast.</div>
+    </section>
+    <section>
+      <h2>Evaluation summary</h2>
+      <div class="metric"><span>Model</span><strong>Gradient boosting</strong></div>
+      <div class="metric"><span>Validation design</span><strong>80/20</strong><small>Chronological split</small></div>
+      <div class="metric"><span>Forecast horizon</span><strong>5 min</strong></div>
+      <h2 style="margin-top:28px">Security controls</h2>
+      <div class="security"><p class="status">API ready</p><p>Key authentication<br>Input range validation<br>30 requests per minute<br>Restricted browser origins<br>Request IDs and audit logging</p></div>
+    </section>
+  </main>
+  <script>
+    const value = id => Number(document.getElementById(id).value);
+    async function predict() {
+      const lags = [value('lag1'),value('lag2'),value('lag3')];
+      const features = {hour:value('hour'),day_of_week:value('day'),weather_temp:value('temp'),weather_precip:value('rain'),volume:value('volume'),incident:value('incident'),speed_lag_1:lags[0],speed_lag_2:lags[1],speed_lag_3:lags[2],rolling_mean_3:lags.reduce((sum,item)=>sum+item,0)/3};
+      const result = document.getElementById('result');
+      try {
+        const response = await fetch('http://127.0.0.1:8000/predict',{method:'POST',headers:{'Content-Type':'application/json','X-API-Key':document.getElementById('apiKey').value},body:JSON.stringify({features})});
+        const body = await response.json();
+        if (!response.ok) throw new Error(body.detail || 'Request failed');
+        result.textContent = `Predicted speed: ${body.predicted_speed_kmh.toFixed(2)} km/h for ${body.segment_id}`;
+      } catch (error) { result.textContent = `Error: ${error.message}`; }
+    }
+  </script>
 </body>
 </html>

@@ -1,55 +1,84 @@
-﻿import numpy as np
-import pandas as pd
+"""Generate a reproducible synthetic traffic sensor data set.
+
+The data are synthetic and must not be described as observations from a real
+city. They represent a single urban road segment sampled every five minutes.
+"""
+
+from __future__ import annotations
+
 from datetime import datetime, timedelta
+from pathlib import Path
 
-def generate_traffic_data(days=30, sample_interval=5):
-    """
-    Generate synthetic traffic data for a single road segment.
-    Returns a DataFrame with columns: timestamp, speed, volume, weather_temp, weather_precip
-    """
-    np.random.seed(42)
-    start_time = datetime(2025, 1, 1, 0, 0, 0)
+import numpy as np
+import pandas as pd
+
+
+def generate_traffic_data(
+    days: int = 60,
+    sample_interval: int = 5,
+    seed: int = 42,
+) -> pd.DataFrame:
+    """Return synthetic speed, demand, weather and incident measurements."""
+    rng = np.random.default_rng(seed)
+    start_time = datetime(2025, 1, 1)
     intervals = int(days * 24 * 60 / sample_interval)
-    timestamps = [start_time + timedelta(minutes=i*sample_interval) for i in range(intervals)]
+    timestamps = [
+        start_time + timedelta(minutes=index * sample_interval)
+        for index in range(intervals)
+    ]
 
-    # Hour of day and day of week features
-    hour = np.array([t.hour + t.minute/60 for t in timestamps])
-    day_of_week = np.array([t.weekday() for t in timestamps])
+    hour = np.array([value.hour + value.minute / 60 for value in timestamps])
+    day_of_week = np.array([value.weekday() for value in timestamps])
+    weekday = (day_of_week < 5).astype(int)
+    morning_peak = np.exp(-0.5 * ((hour - 8.0) / 1.5) ** 2)
+    evening_peak = np.exp(-0.5 * ((hour - 17.5) / 1.8) ** 2)
+    demand_index = weekday * (morning_peak + evening_peak)
 
-    # Base speed pattern: sinusoidal with morning and evening peaks
-    base_speed = 50 + 10 * np.sin(2 * np.pi * (hour - 7) / 12)   # peaks around 7-9 and 17-19
-    # Add day of week effect (lower on weekends)
-    weekday_effect = np.where(day_of_week < 5, 0, -15)   # weekend slower
-    base_speed += weekday_effect
+    incident = (rng.random(intervals) < 0.025).astype(int)
+    weather_temp = (
+        18
+        + 6 * np.sin(2 * np.pi * (hour - 10) / 24)
+        + rng.normal(0, 1.8, intervals)
+    )
+    raining = rng.random(intervals) < 0.12
+    weather_precip = np.where(raining, rng.gamma(1.5, 0.7, intervals), 0)
+    speed = (
+        58
+        - 19 * demand_index
+        - 17 * incident
+        - 2.2 * weather_precip
+        + rng.normal(0, 3.2, intervals)
+    )
+    speed = np.clip(speed, 8, 80)
+    volume = (
+        65
+        + 120 * demand_index
+        + 18 * weekday
+        + rng.normal(0, 12, intervals)
+    )
+    volume = np.clip(volume, 10, 260)
 
-    # Add random noise and occasional congestion
-    noise = np.random.normal(0, 5, intervals)
-    congestion_events = np.random.rand(intervals) < 0.05   # 5% chance of congestion
-    congestion_magnitude = np.where(congestion_events, -20, 0)
-    speed = base_speed + noise + congestion_magnitude
-    speed = np.clip(speed, 10, 80)   # realistic bounds
+    return pd.DataFrame(
+        {
+            "timestamp": timestamps,
+            "segment_id": "CITY_CENTRE_01",
+            "speed": speed,
+            "volume": volume,
+            "weather_temp": weather_temp,
+            "weather_precip": weather_precip,
+            "incident": incident,
+            "hour": hour,
+            "day_of_week": day_of_week,
+        }
+    )
 
-    # Volume (vehicles per 5 min) correlated with speed (lower speed = higher volume)
-    volume = 200 - 2.5 * speed + np.random.normal(0, 20, intervals)
-    volume = np.clip(volume, 20, 400)
 
-    # Weather data: temperature (C) and precipitation (mm/h)
-    weather_temp = 20 + 5 * np.sin(2 * np.pi * (hour - 12) / 24) + np.random.normal(0, 3, intervals)
-    weather_precip = np.random.exponential(0.5, intervals)
-    weather_precip = np.where(np.random.rand(intervals) < 0.1, weather_precip, 0)
+def main() -> None:
+    output_path = Path("traffic_data.csv")
+    data = generate_traffic_data()
+    data.to_csv(output_path, index=False)
+    print(f"Generated {len(data):,} synthetic records -> {output_path}")
 
-    df = pd.DataFrame({
-        'timestamp': timestamps,
-        'speed': speed,
-        'volume': volume,
-        'weather_temp': weather_temp,
-        'weather_precip': weather_precip
-    })
-    df['hour'] = hour
-    df['day_of_week'] = day_of_week
-    return df
 
-if __name__ == '__main__':
-    df = generate_traffic_data(days=60, sample_interval=5)
-    df.to_csv('traffic_data.csv', index=False)
-    print(f"Generated {len(df)} records -> traffic_data.csv")
+if __name__ == "__main__":
+    main()
