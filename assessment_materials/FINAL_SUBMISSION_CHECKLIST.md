@@ -7,7 +7,7 @@
 
 ## Record the presentation
 
-- Use the supplied PowerPoint and transcript.
+- Each member uses the separate PowerPoint and transcript named for them.
 - Xiaotong Sun presents slides 1 to 4 as the Data and Model Engineer.
 - Jingbiao Geng presents slides 5 to 8 as the API and Security Engineer.
 - Han Jia presents slides 9 to 12 as the Evaluation and Communication Lead.
@@ -32,7 +32,7 @@ The expected stable model results are MAE 2.6083 km/h, RMSE 3.2803 km/h and R sq
 ## Turnitin and Blackboard
 
 - Submit the report to the MSE806 Assessment 2 Turnitin location using the member nominated by the group.
-- Confirm the current classroom and Blackboard instructions for whether the downloaded Turnitin report must be included. The formal V2 PDF says to include it, while the latest classroom checklist leaves the attachment detail to be confirmed.
+- The downloaded Turnitin similarity report is already in `assessment_materials/`; confirm the current Blackboard instruction and keep it in the final ZIP when required.
 - Check the final originality report and revise genuine citation or quotation problems rather than changing technical terms only to reduce a number.
-- Put the proposal, report, code, model, results, slides, transcript, recorded presentation and any required Turnitin report into one ZIP.
+- Put the proposal, report, code, model, results, three separate slide decks, three separate transcripts, recorded presentation and any required Turnitin report into one ZIP. Add the combined group deck only if Blackboard asks for one consolidated presentation file.
 - Open the final ZIP once and confirm every file can be read before uploading to Blackboard.

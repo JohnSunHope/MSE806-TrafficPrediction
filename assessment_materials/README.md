@@ -2,7 +2,7 @@
 
 ## 组员先看
 
-这个目录包含本次小组作业的正式要求、Proposal、Report、PPT、Transcript、Turnitin 查重报告和最终检查清单。Turnitin 查重结果文件已经下载并放入本目录，最终打包提交时应一并保留。
+这个目录包含本次小组作业的正式要求、Proposal、Report、分开的三份 PPT、分开的三份 Transcript、Turnitin 查重报告和最终检查清单。每位成员直接使用以自己姓名命名的 PPT 和 Transcript，不需要在同一个文件中查找自己的部分。Turnitin 查重结果文件已经下载并放入本目录，最终打包提交时应一并保留。
 
 三位成员分别录制自己的部分：
 
@@ -36,13 +36,21 @@ The exact calendar deadline and upload size limit should be checked on Blackboar
 | `MSE806_Assessment2_Project_Proposal.docx` | Task A proposal |
 | `MSE806_Assessment2_Project_Report.docx` | Task B report, including implementation, evaluation, security and contributions |
 | `MSE806_Assessment2_Project_Report_Similarity.pdf` | Downloaded Turnitin similarity report for the project report; include it in the final submission package |
-| `MSE806_Assessment2_Three_Person_Presentation.pptx` | Twelve-slide group presentation |
-| `MSE806_Assessment2_Presentation_Transcript.docx` | Speaker script divided into three presenter parts |
+| `MSE806_Assessment2_Part1_Xiaotong_Sun_Presentation.pptx` | Xiaotong Sun's separate four-slide presentation |
+| `MSE806_Assessment2_Part1_Xiaotong_Sun_Transcript.docx` | Xiaotong Sun's separate script for slides 1-4 |
+| `MSE806_Assessment2_Part2_Jingbiao_Geng_Presentation.pptx` | Jingbiao Geng's separate four-slide presentation |
+| `MSE806_Assessment2_Part2_Jingbiao_Geng_Transcript.docx` | Jingbiao Geng's separate script for slides 5-8 |
+| `MSE806_Assessment2_Part3_Han_Jia_Presentation.pptx` | Han Jia's separate four-slide presentation |
+| `MSE806_Assessment2_Part3_Han_Jia_Transcript.docx` | Han Jia's separate script for slides 9-12 |
+| `MSE806_Assessment2_Three_Person_Presentation.pptx` | Original combined deck retained as a group backup |
+| `MSE806_Assessment2_Presentation_Transcript.docx` | Original combined transcript retained as a group backup |
 | `FINAL_SUBMISSION_CHECKLIST.md` | Final Turnitin, recording and ZIP checks |
 
 ## Presenter instructions
 
 ### Part 1 Xiaotong Sun
+
+Use `MSE806_Assessment2_Part1_Xiaotong_Sun_Presentation.pptx` with `MSE806_Assessment2_Part1_Xiaotong_Sun_Transcript.docx`.
 
 Slides 1–4 cover:
 
@@ -55,6 +63,8 @@ End by handing over to Jingbiao Geng.
 
 ### Part 2 Jingbiao Geng
 
+Use `MSE806_Assessment2_Part2_Jingbiao_Geng_Presentation.pptx` with `MSE806_Assessment2_Part2_Jingbiao_Geng_Transcript.docx`.
+
 Slides 5–8 cover:
 
 - system architecture;
@@ -65,6 +75,8 @@ Slides 5–8 cover:
 End by handing over to Han Jia.
 
 ### Part 3 Han Jia
+
+Use `MSE806_Assessment2_Part3_Han_Jia_Presentation.pptx` with `MSE806_Assessment2_Part3_Han_Jia_Transcript.docx`.
 
 Slides 9–12 cover:
 
@@ -77,7 +89,7 @@ End the complete presentation after slide 12.
 
 ## Recording workflow
 
-1. Download or clone the repository and open the PowerPoint in presentation mode.
+1. Download or clone the repository and open your own separate PowerPoint in presentation mode.
 2. Use a quiet room and record in 16:9 landscape format at 1080p when available.
 3. Show only the slides assigned to your part. Do not display personal notifications or unrelated browser tabs.
 4. Use the transcript as a guide. Speak naturally and explain the evidence rather than reading every sentence exactly.
@@ -124,9 +136,9 @@ Before Blackboard upload, confirm the final ZIP contains:
 - proposal;
 - final report;
 - source code, requirements, model, generated results and demonstration files;
-- PowerPoint slides;
+- the three separate PowerPoint files, plus the combined group deck if the current Blackboard instruction asks for one deck;
 - combined presentation MP4;
-- presentation transcript;
+- the three separate presentation transcripts;
 - downloaded Turnitin similarity report (`MSE806_Assessment2_Project_Report_Similarity.pdf`), which is already included in this directory.
 
 Every member should confirm that their name, student ID and contribution are correct before the group submits.

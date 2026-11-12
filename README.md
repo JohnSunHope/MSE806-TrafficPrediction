@@ -14,16 +14,16 @@ downloaded Turnitin similarity report are in
 Before recording, each member should:
 
 1. Read the official brief and the project report.
-2. Open the PowerPoint and find the four slides assigned to their role.
-3. Read the matching section in the presentation transcript.
+2. Open the separate four-slide PowerPoint named for them.
+3. Open the separate transcript named for them.
 4. Rehearse for 3 to 5 minutes and explain the work in their own words.
 5. Record in 16:9 landscape format with the assigned slides visible.
 
-| Presenter | Student ID | Role | Slides |
+| Presenter | Student ID | Role | Separate files |
 | --- | --- | --- | --- |
-| Xiaotong Sun | 270876224 | Data and Model Engineer | 1 to 4 |
-| Jingbiao Geng | 270686148 | API and Security Engineer | 5 to 8 |
-| Han Jia | 270902385 | Evaluation and Communication Lead | 9 to 12 |
+| Xiaotong Sun | 270876224 | Data and Model Engineer | Part 1 presentation and transcript |
+| Jingbiao Geng | 270686148 | API and Security Engineer | Part 2 presentation and transcript |
+| Han Jia | 270902385 | Evaluation and Communication Lead | Part 3 presentation and transcript |
 
 The combined recording must remain below 15 minutes. The three recordings can
 be recorded separately and combined in slide order, or the group can record one
